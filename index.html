@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>РОССИЯ ОНЛАЙН — Официальный информационный портал</title>
+    <style>
+        /* Глобальное обнуление и аппаратная защита контента от копирования */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        /* Премиальный тонкий скроллбар */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #080808;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #222222;
+            border-radius: 2px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #333333;
+        }
+
+        body {
+            background-color: #070707;
+            /* Ультра-минималистичная инженерная сетка */
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 50px 50px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: #e5e5e5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            padding-bottom: 80px;
+            letter-spacing: -0.015em;
+        }
+
+        /* Шапка платформы */
+        .navbar {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 35px 20px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #ffffff;
+            border-radius: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            max-width: 60%;
+            scrollbar-width: none;
+        }
+        .nav-links::-webkit-scrollbar { display: none; }
+
+        .nav-item {
+            color: #777777;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: color 0.2s, border-color 0.2s;
+            cursor: pointer;
+            padding-bottom: 6px;
+            border-bottom: 2px solid transparent;
+            white-space: nowrap;
+        }
+
+        .nav-item:hover { color: #ffffff; }
+        .nav-item.active { color: #ffffff; border-color: #ffffff; }
+        .main-container { width: 100%; max-width: 900px; padding: 0 20px; }
+    </style>
+    <style>
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Официальные строгие карточки */
+        .card {
+            background: #0f0f0f;
+            border: 1px solid #1a1a1a;
+            border-radius: 6px;
+            padding: 35px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+            margin-bottom: 25px;
+        }
+
+        .card-main {
+            text-align: center;
+            background: linear-gradient(180deg, #111111 0%, #0f0f0f 100%);
+            border: 1px solid #222222;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #ffffff;
+            letter-spacing: -0.02em;
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        p {
+            color: #888888;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+        }
+
+        /* Строгая государственная кнопка */
+        .btn-join {
+            display: inline-block;
+            padding: 14px 40px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #000000;
+            background: #ffffff;
+            border: 1px solid #ffffff;
+            border-radius: 3px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s, color 0.2s;
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .btn-join:hover { background: transparent; color: #ffffff; }
+
+        /* Сетка команды */
+        .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+        .team-member {
+            background: #141414;
+            border: 1px solid #1f1f1f;
+            border-radius: 4px;
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .member-avatar {
+            width: 45px;
+            height: 45px;
+            background: #1d1d1d;
+            border: 1px solid #2a2a2a;
+            color: #ffffff;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .member-info h3 { font-size: 1rem; font-weight: 600; color: #ffffff; margin-bottom: 2px; }
+        .role-admin { color: #888888; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+    </style>
+    <style>
+        /* Инфраструктурный статус-контейнер */
+        .status-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid #1a1a1a;
+        }
+
+        .online-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: #666666;
+        }
+
+        .online-indicator {
+            width: 6px;
+            height: 6px;
+            background-color: #00ff66;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #00ff66;
+        }
+
+        .btn-support {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            border: 1px solid #222222;
+            color: #888888;
+            border-radius: 3px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: background 0.2s, border-color 0.2s, color 0.2s;
+        }
+
+        .btn-support:hover { background: #141414; border-color: #333333; color: #ffffff; }
+
+        /* Элементы FAQ (Аккордеон) */
+        .faq-item { border-bottom: 1px solid #1a1a1a; padding: 15px 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question { font-weight: 600; font-size: 0.95rem; color: #ffffff; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, margin-top 0.3s ease; color: #888888; font-size: 0.9rem; line-height: 1.5; }
+
+        /* Профиль */
+        .profile-info { display: flex; align-items: center; gap: 20px; margin-bottom: 25px; background: #141414; padding: 20px; border-radius: 4px; border: 1px solid #1f1f1f; }
+        .profile-avatar { width: 50px; height: 50px; background: #1d1d1d; border: 1px solid #2a2a2a; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 700; }
+        .stat-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #1a1a1a; font-size: 0.9rem; }
+        .stat-row:last-child { border-bottom: none; }
+        .stat-label { color: #666666; }
+        .stat-value { color: #ffffff; font-weight: 600; }
+
+        /* Скрытая Админ-Панель */
+        .admin-panel { margin-top: 30px; padding: 25px; background: #0a0a0a; border: 1px solid #ff3333; border-radius: 4px; display: none; }
+        .log-box { background: #000000; border: 1px solid #1f1f1f; font-family: monospace; padding: 15px; font-size: 0.8rem; color: #00ff66; height: 120px; overflow-y: auto; margin-top: 15px; border-radius: 3px; }
+
+        .rules-list { list-style: none; }
+        .rules-list li { padding: 14px 18px; margin-bottom: 10px; background: #141414; border-left: 2px solid #ffffff; font-size: 0.9rem; color: #888888; }
+
+        /* Баннер куки */
+        .cookie-banner { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%) translateY(150px); width: calc(100% - 40px); max-width: 650px; background: #0f0f0f; border: 1px solid #1a1a1a; box-shadow: 0 30px 60px rgba(0,0,0,0.9); border-radius: 4px; padding: 20px 25px; display: flex; justify-content: space-between; align-items: center; gap: 25px; z-index: 9999; transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
+        .cookie-banner.show { transform: translateX(-50%) translateY(0); }
+        .cookie-text { font-size: 0.85rem; color: #666666; line-height: 1.5; }
+        .btn-cookie { background: #ffffff; color: #000000; border: none; padding: 10px 20px; border-radius: 2px; cursor: pointer; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">РОССИЯ ОНЛАЙН</div>
+        <div class="nav-links">
+            <span class="nav-item active" onclick="openTab('main-tab', this)">Главная</span>
+            <span class="nav-item" onclick="openTab('rules-tab', this)">Регламент</span>
+            <span class="nav-item" onclick="openTab('profile-tab', this)">Профиль</span>
+        </div>
+    </nav>
+
+    <main class="main-container">
+        
+        <!-- ВКЛАДКА: ГЛАВНАЯ -->
+        <div id="main-tab" class="tab-content active">
+            <section class="card card-main">
+                <h1>Официальный отбор в ведомство проекта</h1>
+                <p>Мы формируем закрытую структуру высококлассных специалистов. Если ваши компетенции соответствуют заявленным стандартам государственной безопасности платформы, отправьте анкету.</p>
+                <div style="display: flex; justify-content: center; margin-bottom: 5px;">
+                    <a href="https://google.com" target="_blank" rel="noopener noreferrer" class="btn-join">Подать заявление</a>
+                </div>
+                
+                <div class="status-container">
+                    <div class="online-box">
+                        <div class="online-indicator"></div>
+                        <span>Главный кластер: <strong>Стабилен (Инфраструктура 48%)</strong></span>
+                    </div>
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="btn-support">Техническая поддержка (Support)</a>
+                </div>
+            </section>
+
+            <section class="card">
+                <h2>Высший руководящий состав</h2>
+                <div class="team-grid">
+                    <div class="team-member">
+                        <div class="member-avatar">S</div>
+                        <div class="member-info">
+                            <h3>SuperBecon</h3>
+                            <span class="role-admin">Основатель проекта</span>
+                        </div>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-avatar">V</div>
+                        <div class="member-info">
+                            <h3>VGOD</h3>
+                            <span class="role-admin">Со-Основатель проекта</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card">
+                <h2>Часто задаваемые вопросы</h2>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">Как долго проверяется заявление? <span>+</span></div>
+                    <div class="faq-answer">Все поступающие анкеты проходят строгую верификацию службой внутренней безопасности в течение 24-48 часов со дня подачи.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">Что дает статус хелпера? <span>+</span></div>
+                    <div class="faq-answer">Доступ к закрытым информационным базам, интеграцию в официальный рабочий Discord-кластер и перспективу карьерного роста.</div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ВКЛАДКА: РЕГЛАМЕНТ -->
+        <div id="rules-tab" class="tab-content">
+            <section class="card">
+                <h2>Внутренний нормативный регламент</h2>
+                <ul class="rules-list">
+                    <li>1. Возрастной ценз: Полные 16 лет на момент верификации данных.</li>
+                    <li>2. Профессиональная этика: Соблюдение субординации и абсолютная конфиденциальность.</li>
+                    <li>3. Технические параметры: Качественная аппаратная связь без посторонних шумов.</li>
+                    <li>4. Доступность: Минимальное присутствие в системе — от 2 до 3 часов ежедневно.</li>
+                </ul>
+            </section>
+        </div>
+
+        <!-- ВКЛАДКА: ПРОФИЛЬ -->
+        <div id="profile-tab" class="tab-content">
+            <section class="card">
+                <h2>Идентификационная карта</h2>
+                <div class="profile-info">
+                    <div class="profile-avatar" id="profAvatar">P</div>
+                    <div>
+                        <h3 id="profName">Player</h3>
+                        <span id="profStatus" style="color: #666666; font-size: 0.8rem;">Статус: Игрок</span>
+                    </div>
+                </div>
+
+                <div class="stat-row"><span class="stat-label">Проверка анкеты:</span><span class="stat-value" id="profAnketa">Не инициирована</span></div>
+                <div class="stat-row"><span class="stat-label">Уровень доступа:</span><span class="stat-value" id="profAccess">Базовый</span></div>
+                <div class="stat-row"><span class="stat-label">Шлюз авторизации:</span><span class="stat-value">RU-NODE_LEF1</span></div>
+
+                <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #1a1a1a;">
+                    <div id="authForm" style="display: flex; gap: 10px;">
+                        <input type="password" id="adminPassword" placeholder="Введите ключ авторизации админ-панели" style="flex: 1; padding: 12px; background: #141414; border: 1px solid #222222; color: white; border-radius: 3px; font-size: 0.85rem; outline: none;">
+                        <button onclick="checkAdminAuth()" class="btn-join" style="margin-top: 0; padding: 0 25px; font-size: 0.8rem; height: 43px;">Вход</button>
+                    </div>
+                    <button id="logoutBtn" onclick="logoutAdmin()" class="btn-support" style="display: none; padding: 10px; font-size: 0.8rem; border-color: #ff3333; color: #ff3333;">Выйти из панели</button>
+                </div>
+
+                <div id="adminSecretPanel" class="admin-panel">
+                    <h3 style="color:#ff3333; font-size:0.9rem; margin-bottom:10px; text-transform:uppercase;">Консоль управления узлом</h3>
+                    <div style="font-size:0.85rem; color:#888;">Оперативный статус: <strong style="color:white;">Режим суперпользователя</strong></div>
+                    <div class="log-box" id="adminConsoleLogs">
+                        [SYSTEM]: Инициализация терминала...<br>
+                        [SYSTEM]: Проверка хеш-суммы ядра базы данных... ОК<br>
+                        [AUTH]: Сессия успешно верифицирована. Права предоставлены.
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </main>
+    <div class="cookie-banner" id="cookieBanner">
+        <div class="cookie-text">Для оптимизации работы платформы мы собираем технические файлы cookie. Продолжая сессию, вы подтверждаете согласие на обработку логов.</div>
+        <button class="btn-cookie" onclick="acceptCookies()">Подтвердить</button>
+    </div>
+
+    <script>
+        function openTab(tabId, element) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            const items = document.querySelectorAll('.nav-item');
+            items.forEach(item => item.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            element.classList.add('active');
+        }
+
+        function toggleFaq(el) {
+            const answer = el.nextElementSibling;
+            const span = el.querySelector('span');
+            if (answer.style.maxHeight && answer.style.maxHeight !== '0px') {
+                answer.style.maxHeight = '0px';
+                answer.style.marginTop = '0px';
+                span.innerText = '+';
+            } else {
+                answer.style.maxHeight = answer.scrollHeight + 'px';
+                answer.style.marginTop = '10px';
+                span.innerText = '−';
+            }
+        }
+
+        function updateProfileUI(role) {
+            const nameEl = document.getElementById('profName');
+            const statusEl = document.getElementById('profStatus');
+            const avatarEl = document.getElementById('profAvatar');
+            const anketaEl = document.getElementById('profAnketa');
+            const accessEl = document.getElementById('profAccess');
+            const authForm = document.getElementById('authForm');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const secretPanel = document.getElementById('adminSecretPanel');
+
+            if (role === 'owner') {
+                nameEl.innerText = 'Owner';
+                statusEl.innerText = 'Статус: Основатель';
+                avatarEl.innerText = 'O';
+                anketaEl.innerText = 'Полный контроль систем';
+                accessEl.innerText = 'Уровень 4 (Root)';
+                authForm.style.display = 'none';
+                if(logoutBtn) logoutBtn.style.display = 'block';
+                if(secretPanel) secretPanel.style.display = 'block';
+            } else if (role === 'admin') {
+                nameEl.innerText = 'Admin';
+                statusEl.innerText = 'Статус: Со-основатель';
+                avatarEl.innerText = 'A';
+                anketaEl.innerText = 'Мониторинг логов';
+                accessEl.innerText = 'Уровень 3 (Admin)';
+                authForm.style.display = 'none';
+                if(logoutBtn) logoutBtn.style.display = 'block';
+                if(secretPanel) secretPanel.style.display = 'block';
+            } else {
+                nameEl.innerText = 'Player';
+                statusEl.innerText = 'Статус: Игрок';
+                avatarEl.innerText = 'P';
+                anketaEl.innerText = 'Не инициирована';
+                accessEl.innerText = 'Базовый';
+                authForm.style.display = 'flex';
+                if(logoutBtn) logoutBtn.style.display = 'none';
+                if(secretPanel) secretPanel.style.display = 'none';
+            }
+        }
+
+        function checkAdminAuth() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === 'rootManagament1') {
+                localStorage.setItem('userRole', 'owner');
+                updateProfileUI('owner');
+                document.getElementById('adminPassword').value = '';
+            } else if (password === 'rootManagament2') {
+                localStorage.setItem('userRole', 'admin');
+                updateProfileUI('admin');
+                document.getElementById('adminPassword').value = '';
+            } else {
+                alert('Ошибка доступа: Ключ не найден в реестре безопасности.');
+            }
+        }
+
+        function logoutAdmin() {
+            localStorage.removeItem('userRole');
+            updateProfileUI('player');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedRole = localStorage.getItem('userRole') || 'player';
+            updateProfileUI(savedRole);
+        });
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const banner = document.getElementById('cookieBanner');
+                if(banner) banner.classList.add('show');
+            }, 1200);
+        });
+
+        function acceptCookies() {
+            document.getElementById('cookieBanner').style.transform = 'translateX(-50%) translateY(150px)';
+        }
+        
+        // --- КОМПЛЕКСНАЯ ИНЖЕНЕРНАЯ ЗАЩИТА ОТ АНАЛИЗА КОДА ---
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', function(e) {
+            if (e.keyCode === 123) { e.preventDefault(); return false; }
+            if (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 67 || e.keyCode === 74)) { e.preventDefault(); return false; }
+            if (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83)) { e.preventDefault(); return false; }
+        });
+    </script>
+</body>
+</html>
