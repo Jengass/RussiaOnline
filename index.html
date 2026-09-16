@@ -752,11 +752,11 @@
 
         function checkAdminAuth() {
             const password = document.getElementById('adminPassword').value;
-            if (password === 'rootManagament1') {
+            if (password === 'root') {
                 localStorage.setItem('userRole', 'owner');
                 updateProfileUI('owner');
                 document.getElementById('adminPassword').value = '';
-            } else if (password === 'rootManagament2') {
+            } else if (password === 'root2') {
                 localStorage.setItem('userRole', 'admin');
                 updateProfileUI('admin');
                 document.getElementById('adminPassword').value = '';
