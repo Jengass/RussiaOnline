@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>РОССИЯ ОНЛАЙН — Официальный информационный сайт</title>
+    <title>РОССИЯ ОНЛАЙН — Официальный портал</title>
     <style>
-        /* Глобальное обнуление и аппаратная защита контента от копирования */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -16,274 +15,418 @@
             -ms-user-select: none;
         }
 
-        /* Премиальный тонкий скроллбар */
         ::-webkit-scrollbar {
             width: 5px;
             height: 5px;
         }
         ::-webkit-scrollbar-track {
-            background: #080808;
+            background: #050508;
         }
         ::-webkit-scrollbar-thumb {
-            background: #222222;
+            background: #1f1f2e;
             border-radius: 2px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #333333;
+            background: #2a2a3a;
         }
-
         body {
-            background-color: #070707;
-            /* Ультра-минималистичная инженерная сетка */
+            background-color: #040406;
             background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+                linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
             background-size: 50px 50px;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            color: #e5e5e5;
+            color: #d1d1d6;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             overflow-x: hidden;
-            padding-bottom: 80px;
-            letter-spacing: -0.015em;
+            padding-bottom: 100px;
+            letter-spacing: -0.01em;
         }
 
-        /* Шапка платформы */
+        .loader-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #040406;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .loader-container {
+            width: 100%;
+            max-width: 360px;
+            text-align: center;
+            padding: 20px;
+        }
+        .loader-spinner {
+            width: 65px;
+            height: 65px;
+            border: 3px solid rgba(255, 255, 255, 0.03);
+            border-top: 3px solid #ffffff;
+            border-radius: 50%;
+            margin: 0 auto 25px auto;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+            animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+
+        .loader-title {
+            font-size: 1.1rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: #ffffff;
+            margin-bottom: 12px;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .loader-status {
+            font-family: monospace;
+            font-size: 0.78rem;
+            color: #666673;
+            margin-bottom: 20px;
+            height: 16px;
+            overflow: hidden;
+            letter-spacing: 0.02em;
+        }
+
+        .loader-bar-bg {
+            width: 100%;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.02);
+            position: relative;
+            overflow: hidden;
+            border-radius: 2px;
+        }
+        .loader-bar-fill {
+            width: 0%;
+            height: 100%;
+            background: #ffffff;
+            box-shadow: 0 0 15px #ffffff, 0 0 30px #ffffff;
+            transition: width 0.1s linear;
+        }
+
+        .loader-percentage {
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: #ffffff;
+            text-align: right;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
         .navbar {
             width: 100%;
-            max-width: 900px;
+            max-width: 1100px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 35px 20px;
+            padding: 40px 30px;
             margin-bottom: 25px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+            opacity: 0;
+            transform: translateY(-10px);
         }
 
         .logo {
-            font-size: 1.25rem;
-            font-weight: 800;
-            letter-spacing: 0.08em;
+            font-size: 1.35rem;
+            font-weight: 900;
+            letter-spacing: 0.12em;
             text-transform: uppercase;
             color: #ffffff;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
         }
-
         .logo::before {
             content: '';
             display: inline-block;
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             background: #ffffff;
-            border-radius: 1px;
+            transform: rotate(45deg);
+            box-shadow: 0 0 10px #ffffff;
         }
 
         .nav-links {
             display: flex;
-            gap: 20px;
-            overflow-x: auto;
-            max-width: 60%;
-            scrollbar-width: none;
+            gap: 40px;
         }
-        .nav-links::-webkit-scrollbar { display: none; }
 
         .nav-item {
-            color: #777777;
+            color: #555562;
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 0.85rem;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
-            transition: color 0.2s, border-color 0.2s;
+            letter-spacing: 0.08em;
+            transition: color 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             cursor: pointer;
             padding-bottom: 6px;
             border-bottom: 2px solid transparent;
-            white-space: nowrap;
         }
 
         .nav-item:hover { color: #ffffff; }
         .nav-item.active { color: #ffffff; border-color: #ffffff; }
-        .main-container { width: 100%; max-width: 900px; padding: 0 20px; }
-    </style>
-    <style>
+        
+        .main-container { 
+            width: 100%; 
+            max-width: 1100px;
+            padding: 0 30px; 
+        }
+
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-
-        /* Официальные строгие карточки */
+    </style>
+    <style>
         .card {
-            background: #0f0f0f;
-            border: 1px solid #1a1a1a;
-            border-radius: 6px;
-            padding: 35px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
-            margin-bottom: 25px;
+            background: rgba(10, 10, 15, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 50px;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            margin-bottom: 35px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 50px 90px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transform: translateY(-2px);
         }
 
         .card-main {
             text-align: center;
-            background: linear-gradient(180deg, #111111 0%, #0f0f0f 100%);
-            border: 1px solid #222222;
+            background: linear-gradient(180deg, rgba(15, 15, 22, 0.8) 0%, rgba(10, 10, 15, 0.6) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         h1 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 12px;
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 16px;
             color: #ffffff;
             letter-spacing: -0.02em;
         }
 
         h2 {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 25px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 35px;
             color: #ffffff;
             text-transform: uppercase;
-            letter-spacing: 0.04em;
+            letter-spacing: 0.06em;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            border-left: 2px solid #ffffff;
+            padding-left: 15px;
         }
-
         p {
-            color: #888888;
-            line-height: 1.6;
-            font-size: 0.95rem;
-            margin-bottom: 25px;
+            color: #8e8e93;
+            line-height: 1.7;
+            font-size: 1rem;
+            margin-bottom: 35px;
         }
 
-        /* Строгая государственная кнопка */
         .btn-join {
             display: inline-block;
-            padding: 14px 40px;
+            padding: 16px 50px;
             font-size: 0.9rem;
             font-weight: 700;
             color: #000000;
             background: #ffffff;
             border: 1px solid #ffffff;
-            border-radius: 3px;
+            border-radius: 6px;
             cursor: pointer;
             text-decoration: none;
-            transition: background 0.2s, color 0.2s;
+            transition: background 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             margin-top: 5px;
             text-transform: uppercase;
-            letter-spacing: 0.06em;
+            letter-spacing: 0.08em;
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
         }
 
-        .btn-join:hover { background: transparent; color: #ffffff; }
+        .btn-join:hover { 
+            background: transparent; 
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(255, 255, 255, 0.2);
+        }
 
-        /* Сетка команды */
-        .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+        .team-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 25px; 
+        }
         .team-member {
-            background: #141414;
-            border: 1px solid #1f1f1f;
-            border-radius: 4px;
-            padding: 25px;
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid rgba(255, 255, 255, 0.02);
+            border-radius: 6px;
+            padding: 25px 30px;
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 25px;
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+        .team-member:hover {
+            background: rgba(255, 255, 255, 0.02);
+            border-color: rgba(255, 255, 255, 0.05);
         }
 
         .member-avatar {
-            width: 45px;
-            height: 45px;
-            background: #1d1d1d;
-            border: 1px solid #2a2a2a;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             color: #ffffff;
-            border-radius: 3px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
         }
 
-        .member-info h3 { font-size: 1rem; font-weight: 600; color: #ffffff; margin-bottom: 2px; }
-        .role-admin { color: #888888; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
-    </style>
-    <style>
-        /* Инфраструктурный статус-контейнер */
+        .team-member:hover .member-avatar {
+            transform: scale(1.05);
+        }
+
+        .member-info h3 { font-size: 1.05rem; font-weight: 600; color: #ffffff; margin-bottom: 4px; }
+        .role-admin { color: #8e8e93; font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
         .status-container {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            margin-top: 30px;
-            padding-top: 25px;
-            border-top: 1px solid #1a1a1a;
+            gap: 20px;
+            margin-top: 40px;
+            padding-top: 35px;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
         }
 
         .online-box {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            font-size: 0.9rem;
-            color: #666666;
+            gap: 12px;
+            font-size: 0.95rem;
+            color: #44444f;
         }
 
         .online-indicator {
             width: 6px;
             height: 6px;
-            background-color: #00ff66;
+            background-color: #34c759;
             border-radius: 50%;
-            box-shadow: 0 0 8px #00ff66;
+            box-shadow: 0 0 12px #34c759;
+            animation: blink 2s infinite ease-in-out;
         }
 
         .btn-support {
             display: block;
             width: 100%;
-            padding: 12px;
+            padding: 15px;
             background: transparent;
-            border: 1px solid #222222;
-            color: #888888;
-            border-radius: 3px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            color: #666673;
+            border-radius: 6px;
             cursor: pointer;
             text-align: center;
             text-decoration: none;
             font-weight: 700;
             font-size: 0.8rem;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
-            transition: background 0.2s, border-color 0.2s, color 0.2s;
+            letter-spacing: 0.06em;
+            transition: background 0.3s, border-color 0.3s, color 0.3s;
         }
 
-        .btn-support:hover { background: #141414; border-color: #333333; color: #ffffff; }
+        .btn-support:hover { background: rgba(255, 255, 255, 0.02); border-color: rgba(255, 255, 255, 0.08); color: #ffffff; }
 
-        /* Элементы FAQ (Аккордеон) */
-        .faq-item { border-bottom: 1px solid #1a1a1a; padding: 15px 0; }
+        .faq-item { border-bottom: 1px solid rgba(255, 255, 255, 0.03); padding: 20px 0; }
         .faq-item:last-child { border-bottom: none; }
-        .faq-question { font-weight: 600; font-size: 0.95rem; color: #ffffff; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, margin-top 0.3s ease; color: #888888; font-size: 0.9rem; line-height: 1.5; }
+        .faq-question { font-weight: 600; font-size: 1rem; color: #ffffff; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: color 0.2s; }
+        .faq-question:hover { color: #8e8e93; }
+        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), margin-top 0.4s cubic-bezier(0.16, 1, 0.3, 1); color: #8e8e93; font-size: 0.95rem; line-height: 1.6; }
+        .rules-category { margin-bottom: 40px; }
+        .rules-category:last-child { margin-bottom: 0; }
+        .rules-category-title {
+            font-size: 1rem;
+            color: #ffffff;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+        .rules-list { list-style: none; }
+        .rules-list li {
+            padding: 24px 28px;
+            margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.005);
+            border: 1px solid rgba(255, 255, 255, 0.01);
+            border-left: 2px solid #ffffff;
+            border-radius: 0 6px 6px 0;
+            transition: background 0.3s, border-color 0.3s;
+        }
+        .rules-list li:hover {
+            background: rgba(255, 255, 255, 0.01);
+            border-color: rgba(255, 255, 255, 0.03);
+            border-left-color: #ffffff;
+        }
+        .rule-title { font-size: 1.05rem; font-weight: 700; color: #ffffff; margin-bottom: 6px; }
+        .rule-desc { font-size: 0.95rem; color: #8e8e93; line-height: 1.6; margin-bottom: 10px; }
+        .rule-punishment { font-size: 0.8rem; font-weight: 700; color: #ff453a; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 8px; }
+        .rule-punishment::before { content: '■'; font-size: 0.6rem; color: rgba(255, 69, 58, 0.4); }
 
-        /* Профиль */
-        .profile-info { display: flex; align-items: center; gap: 20px; margin-bottom: 25px; background: #141414; padding: 20px; border-radius: 4px; border: 1px solid #1f1f1f; }
-        .profile-avatar { width: 50px; height: 50px; background: #1d1d1d; border: 1px solid #2a2a2a; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 700; }
-        .stat-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #1a1a1a; font-size: 0.9rem; }
+        .profile-info { display: flex; align-items: center; gap: 25px; margin-bottom: 30px; background: rgba(255, 255, 255, 0.01); padding: 25px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.02); }
+        .profile-avatar { width: 50px; height: 50px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 700; }
+        .stat-row { display: flex; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.03); font-size: 0.95rem; }
         .stat-row:last-child { border-bottom: none; }
-        .stat-label { color: #666666; }
+        .stat-label { color: #555562; }
         .stat-value { color: #ffffff; font-weight: 600; }
 
-        /* Скрытая Админ-Панель */
-        .admin-panel { margin-top: 30px; padding: 25px; background: #0a0a0a; border: 1px solid #ff3333; border-radius: 4px; display: none; }
-        .log-box { background: #000000; border: 1px solid #1f1f1f; font-family: monospace; padding: 15px; font-size: 0.8rem; color: #00ff66; height: 120px; overflow-y: auto; margin-top: 15px; border-radius: 3px; }
+        .admin-panel { margin-top: 35px; padding: 30px; background: #050507; border: 1px solid rgba(255, 69, 58, 0.2); border-radius: 6px; display: none; }
+        .log-box { background: #000000; border: 1px solid rgba(255, 255, 255, 0.02); font-family: monospace; padding: 20px; font-size: 0.85rem; color: #30d158; height: 140px; overflow-y: auto; margin-top: 15px; border-radius: 4px; }
 
-        .rules-list { list-style: none; }
-        .rules-list li { padding: 14px 18px; margin-bottom: 10px; background: #141414; border-left: 2px solid #ffffff; font-size: 0.9rem; color: #888888; }
-
-        /* Баннер куки */
-        .cookie-banner { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%) translateY(150px); width: calc(100% - 40px); max-width: 650px; background: #0f0f0f; border: 1px solid #1a1a1a; box-shadow: 0 30px 60px rgba(0,0,0,0.9); border-radius: 4px; padding: 20px 25px; display: flex; justify-content: space-between; align-items: center; gap: 25px; z-index: 9999; transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
+        .cookie-banner { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(150px); width: calc(100% - 60px); max-width: 750px; background: rgba(15, 15, 22, 0.9); border: 1px solid rgba(255, 255, 255, 0.03); box-shadow: 0 40px 80px rgba(0,0,0,0.8); border-radius: 8px; padding: 25px 30px; display: flex; justify-content: space-between; align-items: center; gap: 35px; z-index: 9999; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         .cookie-banner.show { transform: translateX(-50%) translateY(0); }
-        .cookie-text { font-size: 0.85rem; color: #666666; line-height: 1.5; }
-        .btn-cookie { background: #ffffff; color: #000000; border: none; padding: 10px 20px; border-radius: 2px; cursor: pointer; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+        .cookie-text { font-size: 0.88rem; color: #666673; line-height: 1.6; }
+        .btn-cookie { background: #ffffff; color: #000000; border: none; padding: 12px 26px; border-radius: 4px; cursor: pointer; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+
+        @keyframes blink { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <nav class="navbar">
+    <div class="loader-screen" id="loaderScreen">
+        <div class="loader-container">
+            <div class="loader-spinner"></div>
+            <div class="loader-title">РОССИЯ ОНЛАЙН</div>
+            <div class="loader-status" id="loaderStatus">Подключение к узлу сети...</div>
+            <div class="loader-bar-bg">
+                <div class="loader-bar-fill" id="loaderBar"></div>
+            </div>
+            <div class="loader-percentage" id="loaderPercent">0%</div>
+        </div>
+    </div>
+
+    <nav class="navbar" id="siteNavbar">
         <div class="logo">РОССИЯ ОНЛАЙН</div>
         <div class="nav-links">
             <span class="nav-item active" onclick="openTab('main-tab', this)">Главная</span>
@@ -294,13 +437,12 @@
 
     <main class="main-container">
         
-        <!-- ВКЛАДКА: ГЛАВНАЯ -->
         <div id="main-tab" class="tab-content active">
             <section class="card card-main">
                 <h1>Официальный отбор в ведомство проекта</h1>
                 <p>Мы формируем закрытую структуру высококлассных специалистов. Если ваши компетенции соответствуют заявленным стандартам государственной безопасности платформы, отправьте анкету.</p>
                 <div style="display: flex; justify-content: center; margin-bottom: 5px;">
-                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSc7GXLU_fE9ZLFQzW2wP92cRwXAVHOoZCFkfPMPzkIVbPj9MQ/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" class="btn-join">Подать заявление</a>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSc7GXLU_fE9ZLFQzW2wP92cRwXAVHOoZCFkfPMPzkIVbPj9MQ/viewform" target="_blank" rel="noopener noreferrer" class="btn-join">Подать заявление</a>
                 </div>
                 
                 <div class="status-container">
@@ -345,20 +487,98 @@
             </section>
         </div>
 
-        <!-- ВКЛАДКА: РЕГЛАМЕНТ -->
         <div id="rules-tab" class="tab-content">
             <section class="card">
-                <h2>Внутренний нормативный регламент</h2>
-                <ul class="rules-list">
-                    <li>1. Возрастной ценз: Полные 16 лет на момент верификации данных.</li>
-                    <li>2. Профессиональная этика: Соблюдение субординации и абсолютная конфиденциальность.</li>
-                    <li>3. Технические параметры: Качественная аппаратная связь без посторонних шумов.</li>
-                    <li>4. Доступность: Минимальное присутствие в системе — от 2 до 3 часов ежедневно.</li>
-                </ul>
+                <h2>Правила Discord сервера | РОССИЯ ОНЛАЙН</h2>
+                <p style="margin-bottom: 35px; background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.02); padding: 25px; border-left: 2px solid #ff453a; border-radius: 0 6px 6px 0; font-size: 0.98rem; color: #ffffff;">
+                    <strong>Важно:</strong> Заходя на сервер, вы автоматически соглашаетесь с данными правилами. Модерация и администрация имеют право выдать наказание, если ваше поведение мешает комфортной игре и общению других участников.
+                </p>
+
+                <div class="rules-category">
+                    <div class="rules-category-title">Общение и текстовые каналы</div>
+                    <ul class="rules-list">
+                        <li>
+                            <div class="rule-title">Оскорбления и токсичность</div>
+                            <div class="rule-desc">Запрещено оскорблять участников, использовать унизительные прозвища, разводить подколы и токсичную атмосферу.</div>
+                            <div class="rule-punishment">Мут от 60 до 180 минут</div>
+                        </li>
+                        <li>
+                            <div class="rule-title">Оскорбление и упоминание родных</div>
+                            <div class="rule-desc">Любые прямые или завуалированные оскорбления родителей, членов семьи и родственников.</div>
+                            <div class="rule-punishment">Бан от 7 до 30 дней</div>
+                        </li>
+                        <li>
+                            <div class="rule-title">Нецензурная брань (Мат)</div>
+                            <div class="rule-desc">Чрезмерное использование мата, матерные слова в никнеймах, статусах или на аватарах. Разрешен редкий мат к слову, но не трехэтажные конструкции.</div>
+                            <div class="rule-punishment">Предупреждение / Мут на 30 - 60 минут</div>
+                        </li>
+                        <li>
+                            <div class="rule-title">Капс, флуд и спам</div>
+                            <div class="rule-desc">Отправка сообщений ЗАГЛАВНЫМИ БУКВАМИ, дублирование одной и той же строки более 3 раз, массовый тег пользователей без причины.</div>
+                            <div class="rule-punishment">Мут на 30 - 120 минут</div>
+                        </li>
+                        <li>
+                            <div class="rule-title">Розжиг конфликтов и политика</div>
+                            <div class="rule-desc">Обсуждение political тем, военных действий, межнациональные споры, расизм, нацизм и оскорбление чувств верующих.</div>
+                            <div class="rule-punishment">Бан от 3 дней до перманентного</div>
+                        </li>
+                        <li>
+                            <div class="rule-title">Контент 18+ (NSFW)</div>
+                            <div class="rule-desc">Публикация порнографии, эротики, расчлененки, шок-контента в любых текстовых каналах, на аватарах, в баннерах или статусах.</div>
+                            <div class="rule-punishment">Бан от 7 дней до перманентного</div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="rules-category" style="margin-top: 40px;">
+                    <div class="rules-category-title">Голосовые каналы</div>
+                    <ul class="rules-list">
+                        <li>
+                            <div class="rule-title">Крик, шумы и саундпад</div>
+                            <div class="rule-desc">Намеренное создание громких звуков, крики в микрофон, включение музыки через саундпад/микрофон без согласия всех участников в канале.</div>
+                            <div class="rule-punishment">Мут в голосовых каналах на 60 - 120 минут</div>
+                        </li>
+                        <li>
+                            <div class="rule-title">Оскорбления в ГЧ</div>
+                            <div class="rule-desc">Перенос конфликтов из чата в голос, оскорбление участников, мат в сторону администрации.</div>
+                            <div class="rule-punishment">Мут в голосовых каналах от 120 минут / Бан на сервере</div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="rules-category" style="margin-top: 40px;">
+                    <div class="rules-category-title">Реклама, сливы и махинации</div>
+                    <ul class="rules-list">
+                        <li>
+                            <div class="rule-title">Сторонняя реклама</div>
+                            <div class="rule-desc">Распространение ссылок на чужие Discord-серверы, YouTube/TikTok каналы (не связанные с нашим проектом), группы ВК или сторонние сайты. Сюда же относится реклама в ЛС участникам сервера.</div>
+                            <div class="rule-punishment">Перманентный бан</div>
+                        </li>
+                        <li>
+                            <div class="rule-title">Продажа за реальные деньги (РМТ)</div>
+                            <div class="rule-desc">Попытки продать, купить или обменять аккаунты Roblox, вирты, машины или роли в Discord за реальные рубли/робуксы.</div>
+                            <div class="rule-punishment">Перманентный бан с занесением в ЧС проекта</div>
+                        </li>
+                        <li>
+                            <div class="rule-title">Обман, фишинг и вредоносные ссылки</div>
+                            <div class="rule-desc">Распространение ссылок на скачивание читов, фейковых сайтов для кражи аккаунтов (фишинг), вирусов или скриптов.</div>
+                            <div class="rule-punishment">Вечный бан по IP</div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="rules-category" style="margin-top: 40px;">
+                    <div class="rules-category-title">Никнеймы и профили</div>
+                    <ul class="rules-list">
+                        <li>
+                            <div class="rule-title">Запрещенные никнеймы</div>
+                            <div class="rule-desc">Никнеймы, содержащие оскорбления, мат, политические лозунги, рекламу сайтов или упоминание администрации (например, ник Админ, Модератор).</div>
+                            <div class="rule-punishment">Принудительное изменение ника старшими / Бан до смены данных</div>
+                        </li>
+                    </ul>
+                </div>
             </section>
         </div>
 
-        <!-- ВКЛАДКА: ПРОФИЛЬ -->
         <div id="profile-tab" class="tab-content">
             <section class="card">
                 <h2>Идентификационная карта</h2>
@@ -366,7 +586,7 @@
                     <div class="profile-avatar" id="profAvatar">P</div>
                     <div>
                         <h3 id="profName">Player</h3>
-                        <span id="profStatus" style="color: #666666; font-size: 0.8rem;">Статус: Игрок</span>
+                        <span id="profStatus" style="color: #555562; font-size: 0.85rem;">Статус: Игрок</span>
                     </div>
                 </div>
 
@@ -374,17 +594,17 @@
                 <div class="stat-row"><span class="stat-label">Уровень доступа:</span><span class="stat-value" id="profAccess">Базовый</span></div>
                 <div class="stat-row"><span class="stat-label">Шлюз авторизации:</span><span class="stat-value">RU-NODE_LEF1</span></div>
 
-                <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #1a1a1a;">
+                <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.03);">
                     <div id="authForm" style="display: flex; gap: 10px;">
-                        <input type="password" id="adminPassword" placeholder="Введите ключ авторизации админ-панели" style="flex: 1; padding: 12px; background: #141414; border: 1px solid #222222; color: white; border-radius: 3px; font-size: 0.85rem; outline: none;">
-                        <button onclick="checkAdminAuth()" class="btn-join" style="margin-top: 0; padding: 0 25px; font-size: 0.8rem; height: 43px;">Вход</button>
+                        <input type="password" id="adminPassword" placeholder="Введите ключ авторизации админ-панели" style="flex: 1; padding: 14px; background: #0a0a0f; border: 1px solid rgba(255, 255, 255, 0.03); color: white; border-radius: 6px; font-size: 0.9rem; outline: none; transition: border-color 0.2s;">
+                        <button onclick="checkAdminAuth()" class="btn-join" style="margin-top: 0; padding: 0 30px; font-size: 0.8rem; height: 47px;">Вход</button>
                     </div>
-                    <button id="logoutBtn" onclick="logoutAdmin()" class="btn-support" style="display: none; padding: 10px; font-size: 0.8rem; border-color: #ff3333; color: #ff3333;">Выйти из панели</button>
+                    <button id="logoutBtn" onclick="logoutAdmin()" class="btn-support" style="display: none; padding: 12px; font-size: 0.85rem; border-color: #ff453a; color: #ff453a;">Выйти из панели</button>
                 </div>
 
                 <div id="adminSecretPanel" class="admin-panel">
-                    <h3 style="color:#ff3333; font-size:0.9rem; margin-bottom:10px; text-transform:uppercase;">Консоль управления узлом</h3>
-                    <div style="font-size:0.85rem; color:#888;">Оперативный статус: <strong style="color:white;">Режим суперпользователя</strong></div>
+                    <h3 style="color:#ff453a; font-size:0.95rem; margin-bottom:12px; text-transform:uppercase; letter-spacing:0.04em;">Консоль управления узлом</h3>
+                    <div style="font-size:0.9rem; color:#666;">Оперативный статус: <strong style="color:white;">Режим суперпользователя</strong></div>
                     <div class="log-box" id="adminConsoleLogs">
                         [SYSTEM]: Инициализация терминала...<br>
                         [SYSTEM]: Проверка хеш-суммы ядра базы данных... ОК<br>
@@ -395,18 +615,84 @@
         </div>
 
     </main>
+
     <div class="cookie-banner" id="cookieBanner">
         <div class="cookie-text">Для оптимизации работы платформы мы собираем технические файлы cookie. Продолжая сессию, вы подтверждаете согласие на обработку логов.</div>
         <button class="btn-cookie" onclick="acceptCookies()">Подтвердить</button>
     </div>
-
     <script>
+        const loadStatuses = [
+            "Инициализация безопасного ядра...",
+            "Синхронизация локальных логов...",
+            "Проверка TLS-сертификатов...",
+            "Защита реестров данных РОССИЯ ОНЛАЙН...",
+            "Развертывание кибер-панели...",
+            "Готово к работе."
+        ];
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const bar = document.getElementById('loaderBar');
+            const percent = document.getElementById('loaderPercent');
+            const statusText = document.getElementById('loaderStatus');
+            const loaderScreen = document.getElementById('loaderScreen');
+            const siteNavbar = document.getElementById('siteNavbar');
+            const cards = document.querySelectorAll('.card');
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.floor(Math.random() * 4) + 2;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    statusText.innerText = loadStatuses[loadStatuses.length - 1];
+                    bar.style.width = '100%';
+                    percent.innerText = '100%';
+
+                    setTimeout(() => {
+                        loaderScreen.style.opacity = '0';
+                        loaderScreen.style.transform = 'scale(1.02)';
+                        setTimeout(() => {
+                            loaderScreen.style.display = 'none';
+                            siteNavbar.style.transition = 'opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+                            siteNavbar.style.opacity = '1';
+                            siteNavbar.style.transform = 'translateY(0)';
+                            cards.forEach((card, index) => {
+                                setTimeout(() => {
+                                    card.style.transition = 'opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+                                    card.style.opacity = '1';
+                                    card.style.transform = 'translateY(0)';
+                                }, index * 120);
+                            });
+                        }, 400);
+                    }, 400);
+                } else {
+                    bar.style.width = progress + '%';
+                    percent.innerText = progress + '%';
+                    const statusIndex = Math.floor((progress / 100) * (loadStatuses.length - 1));
+                    statusText.innerText = loadStatuses[statusIndex];
+                }
+            }, 50);
+
+            const savedRole = localStorage.getItem('userRole') || 'player';
+            updateProfileUI(savedRole);
+        });
+
         function openTab(tabId, element) {
             const contents = document.querySelectorAll('.tab-content');
-            contents.forEach(content => content.classList.remove('active'));
+            contents.forEach(content => {
+                content.classList.remove('active');
+                content.style.opacity = '0';
+                content.style.transform = 'translateY(15px)';
+            });
             const items = document.querySelectorAll('.nav-item');
             items.forEach(item => item.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
+
+            const activeTab = document.getElementById(tabId);
+            activeTab.classList.add('active');
+            activeTab.offsetHeight; 
+            activeTab.style.transition = 'opacity 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+            activeTab.style.opacity = '1';
+            activeTab.style.transform = 'translateY(0)';
             element.classList.add('active');
         }
 
@@ -419,7 +705,7 @@
                 span.innerText = '+';
             } else {
                 answer.style.maxHeight = answer.scrollHeight + 'px';
-                answer.style.marginTop = '10px';
+                answer.style.marginTop = '15px';
                 span.innerText = '−';
             }
         }
@@ -484,11 +770,6 @@
             updateProfileUI('player');
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedRole = localStorage.getItem('userRole') || 'player';
-            updateProfileUI(savedRole);
-        });
-
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const banner = document.getElementById('cookieBanner');
@@ -500,7 +781,6 @@
             document.getElementById('cookieBanner').style.transform = 'translateX(-50%) translateY(150px)';
         }
         
-        // --- КОМПЛЕКСНАЯ ИНЖЕНЕРНАЯ ЗАЩИТА ОТ АНАЛИЗА КОДА ---
         document.addEventListener('contextmenu', e => e.preventDefault());
         document.addEventListener('keydown', function(e) {
             if (e.keyCode === 123) { e.preventDefault(); return false; }
